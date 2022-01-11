@@ -112,20 +112,21 @@ for (dimension in 1:300){
       for (r in 1:10){
         data_dist[idx,dimension]<- c(armdata[[e]][[p]][[r]])[dimension] 
         idx <- idx + 1
-        if (e==5 & p ==2 & r==7) print(idx)
       }
     }
   }
 }
 
 normtest <- function(x){
-  test <- shapiro.test(x)
+  # What test to use
+  test <- ks.test(x,"pnorm",mean(x),sd(x))
   return(test$p.value)
 }
 
 p_vals <- apply(data_dist,2,normtest)
 p_vals
 sum(p_vals >0.05)
+
 p_vals_adj <- p.adjust(p_vals, method = "BH")
 sum(p_vals_adj >0.05)
 
@@ -133,20 +134,61 @@ sum(p_vals_adj >0.05)
 
 H0<-c(1:300)
 p_value <- sort(p_vals_adj)
-plot(H0,p_value,main="Adjusted P-values Shapiro test normality",col="blue",type)
+plot(H0,p_value,main="Adjusted P-values Shapiro test normality",col="blue")
 lines(H0,rep(0.05,300),col="red",type="l",lty=2)
 legend(x=0.9,legend=c("p-values","alpha=0.05"),col=c("blue","red"),lty=c(1,2))
+
 min_index <- which.min(p_vals_adj)
 max_index <- which.max(p_vals_adj)
 
 par(mfrow=c(1,2))
-qqnorm(data_dist[-418,min_index])
-qqline(data_dist[-418,min_index])
+qqnorm(data_dist[,min_index])
+qqline(data_dist[,min_index])
 
-qqnorm(data_dist[-418,max_index])
-qqline(data_dist[-418,max_index])
-
-
-
+qqnorm(data_dist[,max_index])
+qqline(data_dist[,max_index])
 par(mfrow=c(1,1))
-plot(x=armdata[[5]][[2]][[7]][,1],y=armdata[[5]][[2]][[7]][,3])
+
+
+hist(data_dist[,min_index])
+plot(data_dist[,min_index])
+which.max(data_dist[,min_index])
+which.max(data_dist[-1121,min_index])
+outliers <- c(1121,1281)
+# Outlier 1 : 1121 Forsøg 12 person 3 rep 1'
+# Outlier 2:  1281 Forsøg 13 person 9 rep 1'
+
+
+data_dist_sorted <- data_dist[-outliers,]
+
+p_vals_x <- apply(data_dist_sorted[,1:100],2,normtest)
+p_vals_x
+sum(p_vals_x >0.05)
+
+
+p_vals_y <- apply(data_dist_sorted[,101:200],2,normtest)
+p_vals_y
+sum(p_vals_y >0.05)
+
+
+p_vals_z <- apply(data_dist_sorted[,201:300],2,normtest)
+p_vals_z
+sum(p_vals_z >0.05)
+
+
+p_vals_adj <- p.adjust(c(p_vals_x,p_vals_y,p_vals_z), method = "BH")
+
+
+sum(p_vals_adj[1:100] >0.05)
+sum(p_vals_adj[101:200] >0.05)
+sum(p_vals_adj[201:300] >0.05)
+
+X <- c(1:100)
+p_val <- sort((p_vals_adj[1:100]))
+plot(X,y=p_val,main="Adjusted P-values Kolmogorov-smirnov test normality",col="blue")
+lines(X,sort(p_vals_adj[101:200]),col="red",type="p")
+lines(X,sort(p_vals_adj[201:300]),col="green",type="p")
+lines(X,rep(0.05,100),col="black",type="l",lty=2)
+legend(x=0.95,legend=c("p-values_x","p-values_y","p-values_z","alpha=0.05"),col=c("blue","red","green","black"),lty=c(1,1,1,2))
+
+
