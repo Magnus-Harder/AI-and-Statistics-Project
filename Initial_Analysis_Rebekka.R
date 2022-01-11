@@ -72,32 +72,40 @@ for (j in 1:15){
 
 ### 3.d plotting
 library(rgl)
-r3dDefaults$windowRect <- c(0,50, 1500, 900)
+r3dDefaults$windowRect <- c(0,50, 1500, 1000)
 
-start_cyl <- cylinder3d(cbind(0, 0, seq(0, 22.5, length = 22.5)), radius = c(3,3,3), sides = 20, closed = -2)
-target_cyl <- cylinder3d(cbind(60, 0, seq(0, 22.5, length = 22.5)), radius = c(3,3,3), sides = 20, closed = -2)
+start_cyl <- cylinder3d(cbind(0, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+target_cyl <- cylinder3d(cbind(60, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl1 <- cylinder3d(cbind(0, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl2 <- cylinder3d(cbind(60, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
 cyl3 <- cylinder3d(cbind(15, 0, seq(0, 35, length = 35)), radius = c(3,3,3), sides = 10, closed = -2)
 shade3d(addNormals(subdivision3d(start_cyl)), col = 'darkred')
 shade3d(addNormals(subdivision3d(target_cyl)), col = 'darkgreen')
+shade3d(addNormals(subdivision3d(cyl1)), col = 'pink')
+shade3d(addNormals(subdivision3d(cyl2)), col = 'pink', alpha = 0.5)
 shade3d(addNormals(subdivision3d(cyl3)), col = 'lightblue')
 surface3d(c(-7, 67), c(-20, 20), matrix(0, 2, 2), col = "brown", alpha = 0.9, specular = "black")
 for (i in 1:10){
   lines3d(cbind(curvemean(armdata[[3]][[i]],1),curvemean(armdata[[3]][[i]],2),curvemean(armdata[[3]][[i]],3)), col = color_person[i])
 }
 legend3d("topleft", legend = paste('Person ', c(1:10)), lty = 1, col = color_person, cex=2.5, inset=c(0.02))
-rgl.viewpoint(zoom = .9)
+rgl.viewpoint(zoom = .8)
 
 colors_exp.no <- c("#E41A1C","#874F6F","#3881B0","#449B75","#56A255","#7E6E85","#AC5782","#E3712B",
                    "#FFA10D","#FFE528","#E1C62F","#B16C29","#C66764","#F17EB4","#CB8CAD","#999999")
-start_cyl <- cylinder3d(cbind(0, 0, seq(0, 22.5, length = 22.5)), radius = c(3,3,3), sides = 20, closed = -2)
-target_cyl <- cylinder3d(cbind(60, 0, seq(0, 22.5, length = 22.5)), radius = c(3,3,3), sides = 20, closed = -2)
+start_cyl <- cylinder3d(cbind(0, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+target_cyl <- cylinder3d(cbind(60, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl1 <- cylinder3d(cbind(0, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl2 <- cylinder3d(cbind(60, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
 #cyl3 <- cylinder3d(cbind(30, 0, seq(0, 20, length = 10)), radius = c(3,3,3), sides = 10, closed = -2)
 shade3d(addNormals(subdivision3d(start_cyl)), col = 'darkred')
 shade3d(addNormals(subdivision3d(target_cyl)), col = 'darkgreen')
+shade3d(addNormals(subdivision3d(cyl1)), col = 'pink')
+shade3d(addNormals(subdivision3d(cyl2)), col = 'pink', alpha = 0.5)
 #shade3d(addNormals(subdivision3d(cyl3)), col = 'lightblue')
 surface3d(c(-7, 67), c(-20, 20), matrix(0, 2, 2), col = "brown", alpha = 0.9, specular = "black")
 for (i in 1:16){
   lines3d(cbind(curvemean2(armdata[[i]],1),curvemean2(armdata[[i]],2),curvemean2(armdata[[i]],3)), col = colors_exp.no[i])
 }
-legend3d("topleft", legend = paste('Eksperiment', c(1:16)), lty = 1, col = colors_exp.no, cex=2.5, inset=c(0.02))
-rgl.viewpoint(zoom = .9)
+legend3d("topleft", legend = paste('Experiment', c(1:16)), lty = 1, col = colors_exp.no, cex=2.5, inset=c(0.02))
+rgl.viewpoint(zoom = .8)
