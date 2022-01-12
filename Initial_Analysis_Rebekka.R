@@ -109,3 +109,8 @@ for (i in 1:16){
 }
 legend3d("topleft", legend = paste('Experiment', c(1:16)), lty = 1, col = colors_exp.no, cex=2.5, inset=c(0.02))
 rgl.viewpoint(zoom = .8)
+
+
+
+## Tabt cylinder
+lines3d(armdata[[5]][[2]][[7]])
