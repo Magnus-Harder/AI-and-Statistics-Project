@@ -1,0 +1,2 @@
+Hvordan tester, viser vi at repetetion er lige meget, hvis vi nu vil sammenfatte hvert person til hvert experiment med et gennemsnit?
+
