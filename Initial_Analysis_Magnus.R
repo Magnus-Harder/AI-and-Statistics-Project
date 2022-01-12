@@ -1,7 +1,3 @@
-library(reticulate)
-
-py_config()
-
 # Sun Jan  9 18:33:58 2022 ------------------------------
 load("armdata.RData")
 

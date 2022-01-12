@@ -6,3 +6,4 @@ def hellomagnus():
 
 def hellonikolaj():
   return "Hello Nikolaj"
+
