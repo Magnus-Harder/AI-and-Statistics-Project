@@ -1,2 +1,2 @@
-Sys.setenv(RETICULATE_PYTHON=".venv/bin/python")
+Sys.setenv(RETICULATE_PYTHON=".venv/Scripts/python.exe")
 print("Python Env Set:")
