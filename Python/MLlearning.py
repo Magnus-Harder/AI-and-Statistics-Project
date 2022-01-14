@@ -49,7 +49,8 @@ def MLlearning(X, y, n_trees=[10,20], n_splits_outer=5,n_splits_inner=10, test_s
             predictions_true[test_index_inner] = y_vali
         
 
-        mc_inner.append(mcnemar(y_true=y_cross,yhatA=predictions_RF[0,:],yhatB=predictions_RF[1,:]))
+        mc = mcnemar(y_true=y_cross,yhatA=predictions_RF[0,:],yhatB=predictions_RF[1,:])
+        mc_inner.append(mc)
         y_pred_RF_inner.append(predictions_RF)
         y_true_inner.append(y_cross)
 
