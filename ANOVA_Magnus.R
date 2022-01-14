@@ -1,7 +1,6 @@
 load("armdataCleaned.RData")
 
 
-anova(lm(armdata[[1]][[1]]~repetetion))
 
 armdata[[1]][[1]][[1]]
 
@@ -20,6 +19,115 @@ for (dimension in 1:300){
 }
 
 
+norm <- function(x){
+  
+  return(sqrt(sum(x^2)))
+}
+normtest <- function(x){
+  # What test to use
+  test <- ks.test(x,"pnorm",mean(x),sd(x))
+  return(test$p.value)
+}
+
+
+apply(armdata[[1]][[1]][[1]],1,norm)
+
+
+
+norm_data <- matrix(nrow=1600,ncol =99)
+
+for (dimension in 1:99){
+  idx <- 1 
+  for (e in 1:16){
+    for (p in 1:10){
+      for (r in 1:10){
+        if (armdata[[e]][[p]][[r]][dimension,3] < armdata[[e]][[p]][[r]][dimension+1,3]){
+          x <- armdata[[e]][[p]][[r]][dimension,]-armdata[[e]][[p]][[r]][dimension+1,]
+          norm_data[idx,dimension]<- -norm(armdata[[e]][[p]][[r]][dimension,]-armdata[[e]][[p]][[r]][dimension+1,])
+        }
+        else {
+          x <- armdata[[e]][[p]][[r]][dimension,]-armdata[[e]][[p]][[r]][dimension+1,]
+          norm_data[idx,dimension] <- norm(x)
+        }
+        idx <- idx + 1
+      }
+    }
+  }
+}
+
+shapiro.test(norm_data[,1])
+
+qqnorm(norm_data[,1])
+qqline(norm_data[,1])
+
+
+p_vals <- apply(norm_data,2,normtest)
+sum(p_vals >0.05)
+
+p_vals_adj <- p.adjust(p_vals, method = "BH")
+
+
+sum(p_vals_adj > 0.05)
+
+X <- c(1:100)
+p_val <- sort((p_vals_adj[1:100]))
+plot(X,y=p_val,main="Adjusted P-values Kolmogorov-smirnov test normality",col="blue",ylim = c(0,1))
+lines(X,rep(0.05,100),col="black",type="l",lty=2)
+legend("bottomright",legend=c("p-values_x","p-values_y","p-values_z","alpha=0.05"),col=c("blue","red","green","black"),lty=c(1,1,1,2))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+data_max_pos <- matrix(nrow=1600,ncol=3)
+idx <- 1
+for (e in 1:16){
+  for (p in 1:10){
+    for (r in 1:10){
+      max_idx <-  which.max(armdata[[e]][[p]][[r]][,3])
+      data_max_pos[idx,1] <- armdata[[e]][[p]][[r]][max_idx,1]
+      data_max_pos[idx,2] <- armdata[[e]][[p]][[r]][max_idx,2]
+      data_max_pos[idx,3] <- max(armdata[[e]][[p]][[r]][,3])
+      idx <- idx + 1
+    }
+  }
+}
+
+data_max_pos
+
+normtest(data_max_pos[,1])
+normtest(data_max_pos[,2])
+normtest(data_max_pos[,3])
+
+person <- as.factor(rep(rep(1:10,each=10),16))
+experiment <- as.factor(rep(1:16,each=100))
+test <- manova(lm(data_max_pos[1:300,]~person[1:300]+experiment[1:300])) # Experiment is same as checking for effect of obstacle heigth
+
+summary(test)
+normtest(test$residuals)
+plot(test$residuals)
+hist(test$residuals[,1])
+hist(test$residuals[,2])
+hist(test$residuals[,3])
+
+qqnorm(test$residuals[,1])
+qqline(test$residuals[,1])
+
+qqnorm(test$residuals[,2])
+qqline(test$residuals[,2])
 
 
 # Method: Kruskal wallis mean for repetition for each person pr. experiemtns
@@ -92,7 +200,7 @@ for (i in 1:300){
 p_effect_per_adj <- p.adjust(p_effect_per,method = "BH")
 p_effect_exp_adj <- p.adjust(p_effect_exp,method = "BH")
 
-par(mfrow=c(2,1))
+par(mfrow=c(1,1))
 plot(p_effect_exp_adj)
 plot(p_effect_per_adj)
 
