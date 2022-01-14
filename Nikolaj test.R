@@ -1,4 +1,4 @@
-##
+## Load data
 load("armdataCleaned.RData")
 
 data_dist <- matrix(nrow=1600,ncol = 300)
@@ -15,6 +15,7 @@ for (dimension in 1:300){
   }
 }
 
+ # Reformat to matrix
 xs <- c()
 ys <- c()
 zs <- c()
@@ -36,7 +37,7 @@ for (e in 1:16){
 }
 armdf <- data.frame(x = xs,y = ys,z = zs, experiment = factor(experiment), person = factor(person),repetition = factor(repetition))
 
-# Reformat data
+# Reformat data #2
 data_dist <- matrix(nrow=1600,ncol = 300)
 
 for (dimension in 1:300){
@@ -51,24 +52,31 @@ for (dimension in 1:300){
   }
 }
 
-#### First test, Summed norms of datapoints
 
- # Finding norms:
+
+#___________________________________________________________ QUESTION 1 ________________________________________________________________________#
+
+#### First test, Summed norms of datapoints from startin points
+
+# Finding norms:
 norms <- rep(0,1600)
 for (i in 1:1600){
   for (j in 1:100){
-    norms[i] <- norms[i] + norm(t(c(data_dist[i, j],data_dist[i, j+100],data_dist[i, j+200])),type="F")
+    norms[i] <- norms[i] + norm(t(c(data_dist[i, j],data_dist[i, j+100],data_dist[i, j+200])-c(data_dist[i,1],data_dist[i,101],data_dist[i,201])),type="F")
   }
 }
 
 experiment <- as.factor(rep(c(1:16),each=100))
 person <- as.factor(rep(rep(c(1:10),each=10),16))
 
-#Two-way ANOVA
+# Two-way ANOVA
 anova(lm(norms ~ person*experiment))
+anova(lm(norms ~ person))
 
-#Testing for normality, Sharpiro
+# Testing for normality, Sharpiro
 shapiro.test(norms)
+shapiro.test(lm(norms ~ person)$residuals)
+
 
 # Defining function
 normtest <- function(x){
@@ -78,9 +86,93 @@ normtest <- function(x){
 }
 
 # Kolmomgorov-Smirnoff test
-normtest(norms)
-ks.test(lm(norms ~ person*experiment)$residuals,"pnorm",mean(lm(norms ~ person*experiment)$residuals),sd(lm(norms ~ person*experiment)$residuals))
+m <- lm(norms ~ person*experiment)
+ks.test(norms,"pnorm",mean(norms),sd(norms))
+ks.test(m$residuals,"pnorm",mean(m$residuals),sd(m$residuals))
 hist(norms)
+par(mfrow = c(2,2))
+plot(m)
+
+
+
+
+
+
+
+
+
+
+
+
+#### Second test: Max(z)
+
+maxz <- rep(NA,1600)
+for (i in 1:1600){
+    maxz[i] <-  max(data_dist[i, 200:300])
+}
+maxz
+
+# Two-way ANOVA
+anova(lm(maxz ~ person))
+
+# Kolmomgorov-Smirnoff test
+m2 <- lm(maxz ~ person*experiment)
+ks.test(maxz,"pnorm",mean(norms),sd(norms))
+ks.test(m2$residuals,"pnorm",mean(m2$residuals),sd(m2$residuals))
+hist(maxz)
+par(mfrow = c(2,2))
+plot(m2)
+
+
+#___________________________________________________________ QUESTION 2 _________________________________________________________#
+
+
+
+
+
+
+#___________________________________________________________ Left Hand Data ___________________________________________________________#
+
+lefthanddata <- matrix(nrow=1600,ncol = 300)
+
+# Creating left-hand data
+
+for (i in 1:1600){
+  for (j in 1:100){
+    lefthanddata[i,j] <- data_dist[i,j]
+    lefthanddata[i,j+100] <- data_dist[i,100+j]
+    lefthanddata[i,j+200] <- data_dist[i,300-j]
+  }
+}
+
+experiments <- rep(c(13,14,15,10,11,12,7,8,9,4,5,6,1,2,3),100)
+
+#Experiment 1:3
+lefthanddata2[201:300,] <- lefthanddata[1401:1500, ]
+lefthanddata2[101:200,] <- lefthanddata[1301:1400, ]
+lefthanddata2[1:100,] <- lefthanddata[1201:1300, ]
+
+#Experiment 4:6
+lefthanddata2[501:600,] <- lefthanddata[1101:1200, ]
+lefthanddata2[401:500,] <- lefthanddata[1001:1100, ]
+lefthanddata2[301:400,] <- lefthanddata[901:1000, ]
+
+#Experiment 7:9
+lefthanddata2[801:900,] <- lefthanddata[801:900, ]
+lefthanddata2[701:800,] <- lefthanddata[701:800, ]
+lefthanddata2[601:700,] <- lefthanddata[601:700, ]
+
+#Experiment 10:12
+lefthanddata2[1101:1200,] <- lefthanddata[501:600, ]
+lefthanddata2[1001:1100,] <- lefthanddata[401:500, ]
+lefthanddata2[901:1000,] <- lefthanddata[301:400, ]
+
+#Experiment 13:15
+lefthanddata2[1401:1500,] <- lefthanddata[201:300, ]
+lefthanddata2[1301:1400,] <- lefthanddata[101:200, ]
+lefthanddata2[1201:1300,] <- lefthanddata[1:100, ]
+
+save(lefthanddata2,file = "lefthanddata.RData")
 
 
 
