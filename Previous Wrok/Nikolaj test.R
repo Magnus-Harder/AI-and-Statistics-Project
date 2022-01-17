@@ -137,13 +137,21 @@ lefthanddata <- matrix(nrow=1600,ncol = 300)
 
 # Creating left-hand data
 
-for (i in 1:1600){
-  for (j in 1:100){
-    lefthanddata[i,j] <- data_dist[i,j]
-    lefthanddata[i,j+100] <- data_dist[i,100+j]
-    lefthanddata[i,j+200] <- data_dist[i,301-j]
+idx <- 1 
+for (e in 1:16){
+  for (p in 1:10){
+    for (r in 1:10){
+      lefthanddata[idx,1:100] <- max(armdata[[e]][[p]][[r]][,1]) - rev(armdata[[e]][[p]][[r]][,1])
+      lefthanddata[idx,101:200] <- armdata[[e]][[p]][[r]][,2]
+      lefthanddata[idx,201:300] <- rev(armdata[[e]][[p]][[r]][,3])
+      idx <- idx + 1
+    }
   }
 }
+
+
+
+
 
 experiments <- rep(c(13,14,15,10,11,12,7,8,9,4,5,6,1,2,3),100)
 

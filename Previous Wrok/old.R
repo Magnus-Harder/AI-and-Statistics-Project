@@ -54,3 +54,36 @@ McnemarTest <- function(A,B,y,alpha){
   return(c(p,Theta_L,Theta_U))
 }
 
+
+y_new <- rep(NA,3200)
+y_new[1:1600] <- y
+y_new[1601:3200] <- y_left
+
+x_new <- matrix(nrow=3200,ncol=300)
+x_new[1:1600,] <- data_dist
+x_new[1601:3200,] <- data_left
+
+X_all <- np$array(x_new)
+y_all <- np$array(y_new)
+
+
+ModelAll <- Model_left(X=X_all,y=y_all,n_splits=20,max_iter=1000)
+
+
+sum(ModelAll[1:1600]==y)/1600
+sum(ModelAll[1601:3200]==y)/1600 
+sum(ModelAll[1601:3200]==y_left)/1600
+
+prop.test(x=c(519,112),n=c(1600,1600))$p.value
+power.prop.test(1600,519/1600,112/1600)
+sum(ModelAll==y_new)
+
+ModelAll
+
+data_dist[1,201:300]
+data_left[1,201:300]
+
+
+mcnemar.test(Contingency_table(ModelAll[1601:3200],ModelRigthOnly[[2]],y_left))
+
+
