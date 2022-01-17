@@ -141,12 +141,14 @@ for (i in 1:1600){
   for (j in 1:100){
     lefthanddata[i,j] <- data_dist[i,j]
     lefthanddata[i,j+100] <- data_dist[i,100+j]
-    lefthanddata[i,j+200] <- data_dist[i,300-j]
+    lefthanddata[i,j+200] <- data_dist[i,301-j]
   }
 }
 
 experiments <- rep(c(13,14,15,10,11,12,7,8,9,4,5,6,1,2,3),100)
 
+
+lefthanddata2 <- matrix(nrow=1600,ncol = 300)
 #Experiment 1:3
 lefthanddata2[201:300,] <- lefthanddata[1401:1500, ]
 lefthanddata2[101:200,] <- lefthanddata[1301:1400, ]
@@ -172,7 +174,92 @@ lefthanddata2[1401:1500,] <- lefthanddata[201:300, ]
 lefthanddata2[1301:1400,] <- lefthanddata[101:200, ]
 lefthanddata2[1201:1300,] <- lefthanddata[1:100, ]
 
+#Experiment 16
+lefthanddata2[1501:1600,] <- lefthanddata[1501:1600,]
+
 save(lefthanddata2,file = "lefthanddata.RData")
+
+
+
+### 3.d plotting
+#Forsøg 1 person 1
+load("lefthanddata.RData")
+
+
+
+library(rgl)
+
+r3dDefaults$windowRect <- c(0,50, 1500, 1000)
+
+start_cyl <- cylinder3d(cbind(0, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+target_cyl <- cylinder3d(cbind(60, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl1 <- cylinder3d(cbind(0, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl2 <- cylinder3d(cbind(60, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl3 <- cylinder3d(cbind(15, 0, seq(0, 35, length = 35)), radius = c(3,3,3), sides = 10, closed = -2)
+shade3d(addNormals(subdivision3d(start_cyl)), col = 'darkgreen')
+shade3d(addNormals(subdivision3d(target_cyl)), col = 'darkred')
+shade3d(addNormals(subdivision3d(cyl1)), col = 'pink')
+shade3d(addNormals(subdivision3d(cyl2)), col = 'pink', alpha = 0.5)
+#shade3d(addNormals(subdivision3d(cyl3)), col = 'lightblue')
+surface3d(c(-7, 67), c(-20, 20), matrix(0, 2, 2), col = "brown", alpha = 0.9, specular = "black")
+for (i in 1501:1600){
+  lines3d(cbind(data_dist[i,1:100],rep(0,100),data_dist[i,201:300]),col=i)
+}
+rgl.viewpoint(theta=0,phi=-90)
+
+# Forsøg 1 person 1, venstrehånedet
+
+
+
+surface3d(c(-7, 67), c(-20, 20), matrix(0, 2, 2), col = "brown", alpha = 0.9, specular = "black")
+start_cyl <- cylinder3d(cbind(0, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+target_cyl <- cylinder3d(cbind(60, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl1 <- cylinder3d(cbind(0, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl2 <- cylinder3d(cbind(60, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl3 <- cylinder3d(cbind(15, 0, seq(0, 35, length = 35)), radius = c(3,3,3), sides = 10, closed = -2)
+shade3d(addNormals(subdivision3d(start_cyl)), col = 'darkgreen')
+shade3d(addNormals(subdivision3d(target_cyl)), col = 'darkred')
+shade3d(addNormals(subdivision3d(cyl1)), col = 'pink')
+shade3d(addNormals(subdivision3d(cyl2)), col = 'pink', alpha = 0.5)
+#shade3d(addNormals(subdivision3d(cyl3)), col = 'lightblue')
+for (i in 1501:1600){
+  lines3d(cbind(data_left[i,1:100],rep(0,100),data_left[i,201:300]),col=i)
+}
+rgl.viewpoint(theta=0,phi=-90)
+
+
+
+
+
+
+
+
+exp <- rep(c(13,14,15,10,11,12,7,8,9,4,5,6,1,2,3),100)
+
+data_left <- matrix(nrow=1600,ncol = 300)
+
+
+idx <- 1 
+for (e in 1:16){
+  for (p in 1:10){
+    for (r in 1:10){
+      data_left[idx,1:100] <- armdata[[e]][[p]][[r]][,1]
+      data_left[idx,101:200] <- armdata[[e]][[p]][[r]][,2]
+      data_left[idx,201:300] <- rev(armdata[[e]][[p]][[r]][,3])
+      idx <- idx + 1
+    }
+  }
+}
+data_left[1]
+
+for (i in 1:10){
+  lines3d(data_left[i,],col=i)
+}
+
+
+
+data_left[1]
+
 
 
 

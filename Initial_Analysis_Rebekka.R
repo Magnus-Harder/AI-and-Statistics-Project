@@ -35,9 +35,11 @@ color_person = c("#9E0142","#D53E4F","#F46D43","#FDAE61","#FEE08B",
                  "#E6F598","#ABDDA4","#66C2A5","#3288BD","#5E4FA2")
 
 ### 1. Initial Analysis
+par(mfrow=c(1,3))
 boxplot(armdf$x ~ armdf$person, data = armdf[(armdf$experiment == 1), ], col = 2:11)
 boxplot(armdf$y ~ armdf$person, data = armdf[(armdf$experiment == 1), ], col = 2:11)
 boxplot(armdf$z ~ armdf$person, data = armdf[(armdf$experiment == 1), ], col = 2:11)
+
 
 curvemean <- function(data,idx){
   # call curvemean(armdata[[1]][[2]],1) to get curvemean for experiment 1, person 2 of the x-koordinates
@@ -111,6 +113,3 @@ legend3d("topleft", legend = paste('Experiment', c(1:16)), lty = 1, col = colors
 rgl.viewpoint(zoom = .8)
 
 
-
-## Tabt cylinder
-lines3d(armdata[[5]][[2]][[7]])
