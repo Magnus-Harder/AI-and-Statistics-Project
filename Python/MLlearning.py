@@ -5,18 +5,14 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from toolbox_02450.statistics import mcnemar
 from sklearn.datasets import make_blobs
-
-
-
-X, y = make_blobs(n_samples=50, centers=5, n_features=3, random_state=0)
-
+from sklearn.metrics import classification_report
 #%%
 
 
-def MLlearning(X, y, n_trees=[10,20], n_splits_outer=5,n_splits_inner=10, test_size=0.1 , max_iter=1000):
+def MLlearning(X, y, n_trees=[10,20], n_splits_outer=5,n_splits_inner=10, max_iter=1000):
 
-    kf_outer = KFold(n_splits=n_splits_outer,random_state=0,shuffle=True)
-    kf_inner = KFold(n_splits=n_splits_inner,random_state=0,shuffle=True)
+    kf_outer = KFold(n_splits=int(n_splits_outer),random_state=0,shuffle=True)
+    kf_inner = KFold(n_splits=int(n_splits_inner),random_state=0,shuffle=True)
 
     y_pred_MLR = np.zeros(len(y))
     y_pred_RF  = np.zeros(len(y))
@@ -54,21 +50,22 @@ def MLlearning(X, y, n_trees=[10,20], n_splits_outer=5,n_splits_inner=10, test_s
 
 
         # Training and testing LogRegModel
-        LogRegModel = LogisticRegression(max_iter=max_iter, random_state=0).fit(X_cross,y_cross)
+        LogRegModel = LogisticRegression(max_iter=max_iter, random_state=1).fit(X_cross,y_cross)
         y_pred_MLR[test_index] = LogRegModel.predict(X_test)
 
         # Predictions and testing for RandomForestClassifier
 
 
-        RF_model = RandomForestClassifier(n_estimators=n_trees[np.argmax(Accuracy)]).fit(X_cross,y_cross)
+        RF_model = RandomForestClassifier(n_estimators=int(n_trees[np.argmax(Accuracy)]),random_state=0).fit(X_cross,y_cross)
         y_pred_RF[test_index] =  RF_model.predict(X_test)
         
     mc = mcnemar(y,y_pred_MLR,y_pred_RF)
 
+
+    print("MLR")
+    print(classification_report(y_pred_MLR,y))
+    print("")
+    print("RFC")
+    print(classification_report(y_pred_RF,y))
+    
     return y_pred_MLR,y_pred_RF,best_model,mc
-
-
-
-test = MLlearning(X,y)
-test
-#test
