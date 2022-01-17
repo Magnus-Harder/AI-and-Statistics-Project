@@ -124,7 +124,14 @@ par(mfrow = c(2,2))
 plot(m2)
 
 
-#___________________________________________________________ QUESTION 2 _________________________________________________________#
+#___________________________________________________________ Plotting _________________________________________________________#
+
+
+par(mfrow=c(1,3))
+boxplot(armdf$x ~ armdf$person, data = armdf[(armdf$experiment == 1), ], col = 2:11)
+boxplot(armdf$y ~ armdf$person, data = armdf[(armdf$experiment == 1), ], col = 2:11)
+boxplot(armdf$z ~ armdf$person, data = armdf[(armdf$experiment == 1), ], col = 2:11)
+
 
 
 
@@ -220,10 +227,10 @@ rgl.viewpoint(theta=0,phi=-90)
 
 
 surface3d(c(-7, 67), c(-20, 20), matrix(0, 2, 2), col = "brown", alpha = 0.9, specular = "black")
-start_cyl <- cylinder3d(cbind(0, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
-target_cyl <- cylinder3d(cbind(60, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
-cyl1 <- cylinder3d(cbind(0, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
-cyl2 <- cylinder3d(cbind(60, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+start_cyl <- cylinder3d(cbind(60, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+target_cyl <- cylinder3d(cbind(0, 0, seq(0, 10, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl1 <- cylinder3d(cbind(60, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
+cyl2 <- cylinder3d(cbind(0, 0, 10 + seq(0, 12.5, length = 10)), radius = c(3,3,3), sides = 20, closed = -2)
 cyl3 <- cylinder3d(cbind(15, 0, seq(0, 35, length = 35)), radius = c(3,3,3), sides = 10, closed = -2)
 shade3d(addNormals(subdivision3d(start_cyl)), col = 'darkgreen')
 shade3d(addNormals(subdivision3d(target_cyl)), col = 'darkred')
@@ -233,7 +240,7 @@ shade3d(addNormals(subdivision3d(cyl2)), col = 'pink', alpha = 0.5)
 for (i in 1501:1600){
   lines3d(cbind(data_left[i,1:100],rep(0,100),data_left[i,201:300]),col=i)
 }
-rgl.viewpoint(theta=0,phi=-90)
+rgl.viewpoint(theta=180,phi=90)
 
 
 
@@ -251,7 +258,7 @@ idx <- 1
 for (e in 1:16){
   for (p in 1:10){
     for (r in 1:10){
-      data_left[idx,1:100] <- armdata[[e]][[p]][[r]][,1]
+      data_left[idx,1:100] <- rev(armdata[[e]][[p]][[r]][,1])
       data_left[idx,101:200] <- armdata[[e]][[p]][[r]][,2]
       data_left[idx,201:300] <- rev(armdata[[e]][[p]][[r]][,3])
       idx <- idx + 1
@@ -260,13 +267,11 @@ for (e in 1:16){
 }
 data_left[1]
 
-for (i in 1:10){
-  lines3d(data_left[i,],col=i)
-}
+save(data_left, file = "leftdata.RData")
 
 
 
-data_left[1]
+data_left[50]
 
 
 
