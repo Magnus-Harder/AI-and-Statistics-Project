@@ -1,6 +1,7 @@
 #%%
 import numpy as np
 
+
 def logitscore(x,W,b):
     z = W@x+b
     return z
