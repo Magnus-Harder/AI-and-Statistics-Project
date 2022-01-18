@@ -2,10 +2,7 @@ library(reticulate)
 source_python("Python/MLlearning.py")
 source("functions.R")
 np <- import("numpy",convert=FALSE)
-load("DataMatrix.RData")
-
-
-
+load("Data/DataMatrix.RData")
 
 
 # Setting up data in numpy-arrays for training and testing of models
